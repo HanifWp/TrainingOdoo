@@ -14,12 +14,12 @@
         
     "data": [
         "security/ir.model.access.csv",
-        "views/views.xml"
+        "views/planning_role_view.xml"
     ],
     "auto_install": False,
     "installable": True,
-    "application": True,
-    "external_dependencies": {"python" : {}} 
+    "application": True
+    # "external_dependencies": {"python" : {}} 
 
 
 }

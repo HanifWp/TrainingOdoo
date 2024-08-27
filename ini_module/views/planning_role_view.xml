@@ -6,11 +6,11 @@
         <field name="model">planning.role.training</field>
         <field name="arch" type="xml">
 
-            <tree string="Planning Role" editable="bottom">
+            <tree string="Planning Role">
                 <field name="active" column_invisible="1"/>
                 <field name="sequence" widget="handle" />
                 <field name="name" />
-                <field name="resource_ids" />
+                <field name="resource_ids" widget="many2many_avatar_resource" optional="show"/>
                 <field name="color" widget="color_picker" optional="hide"/>
             </tree>
 
@@ -39,37 +39,82 @@
                                     <div class="o_primary">
                                         <field name="name" />
                                     </div>
-                                <div/>
+                                </div>
                                 <div class="row">
                                     <div class="col o_kanban_primary_left">
                                         <field name="resource_ids" widget="many2many_tags"/>
                                     </div>
                                 </div>
                             </div>
-                        <div/>
+                        </div>
                     </t>
                 </templates>
             </kanban>
         </field>
     </record>
 
+    <record id="planning_role_training_view_form" model="ir.ui.view">
+        <field name="name">planning_role_training.view.form</field>
+        <field name="model">planning.role.training</field>
+        <field name="arch" type="xml">
+            <form string="Planning Role">
+                <sheet>
+                    <widget name="web_ribbon" title="Archieved" bg-color="text-bg-danger"
+                    invisible="active"/>
+                    <group>
+                        <field name="active" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="name" required="1"/>
+                        <field name="resource_ids" widget="many2many_avatar_resource" 
+                            context="{'show_job_title' : True, 'from_planning' : True}"
+                            required="1"/>
+                        <field name="point_rate" required="1"/>
+                        <field name="amount" required="1"/>
+                        <field name="color" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
     <record id="planning_role_training_view_search" model="ir.ui.view">
-        <field name="name">planning.role.training.view.search</field>
+        <field name="name">Planning Role Search View</field>
         <field name="model">planning.role.training</field>
         <field name="arch" type="xml">
             <search string="Planning Role Search">
                 <field name="name" />
                 <field name="resource_ids" />
                 <filter name="my_department" string="My Department" 
-                    domain="[('resource_ids.employee_id.number_of_department', '=', 'True')]"/>
-                <separator>
-                <field name="inactive" string="Archived" domain="[('active', '=', 'False')]"/>
+                    domain="[('resource_ids.employee_id.member_of_department', '=', True)]"/>
+                <separator/>
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
                 <group string="Group By">
-                    <filter name="group_byresource" string="Resource" 
-                        context="{'group_by': 'resource_id'}" />
+                    <filter name="group_by_resource" string="Resource" 
+                        context="{'group_by': 'resource_ids'}" />
                 </group>
             </search>
         </field>
     </record>
+
+    <record id="planning_role_training_action" model="ir.actions.act_window">
+        <field name="name">Planning Role</field>
+        <field name="res_model">planning.role.training</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="d-block d-sm-none o-view_nocontent_smiling_face">
+                No Roles Found. Let's create one!
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="planning_role_menu"
+        name="Planning Role"
+        action="planning_role_training_action"
+        parent="hr.menu_config_employee"
+        sequence="25"/>
 
 </odoo>
